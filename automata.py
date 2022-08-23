@@ -20,11 +20,12 @@ class cAutomata:
 
     def show(self):
         alist = [line.rstrip() for line in open(self.path)]
+        '''
         aux = 1
         for line in alist:
             print(f"{aux}.- {line}")
             aux += 1
-
+        '''
         return alist
 
 
@@ -62,68 +63,64 @@ class cAutomata:
 
     def reconoceComent(self):
         lineas = self.show()
-        for linea in lineas:
-            estado = 1
-            cadena = list(linea)
-            i = 0
-            while i < len(cadena):
-                if estado == 1:
-                    if cadena[i] == "/":
-                        estado = 2 
-                        i += 1
-                    else:
-                        estado = 6
-                if estado == 2:
-                    if cadena[i] == "*":
-                        estado = 3 
-                        i += 1
-                    else:
-                        estado = 6
-                if estado == 3:
-                    while cadena[i] != "*":
-                        i += 1
-                        if i + 1 == len(cadena):
-                            estado = 6
-                            break
-                    if i + 1 == len(cadena):
-                        estado = 6
-                    else:
-                        estado = 4
-                        i += 1
-                if estado == 4:
-                    if cadena[i] == "/":
-                        estado = 5
-                    else:
-                        estado = 3
-                if estado == 5:
-                    break
-                if estado == 6:
-                    break
-            
-            if estado == 5:
-                print(f"COMENTARIO: {linea}")
-            elif estado == 6:
-                print(f"NO COMENTARIO: {linea}")
-                
-
-    def comment(self):
-        lineas = self.show()
-        for linea in lineas:
-            estado = 1
+        i = 0
+        multilinea = []
+        estado = 1
+        flag = False
+        while i < len(lineas):
+            linea = lineas[i]
+            aux = 0
             while estado != 3:
+                if estado == 5:
+                    estado = 2
+                    aux = 1
                 if estado == 1:
                     if linea.startswith("/*"):
                         estado = 2
                     else:
-                        print(f"NO COMENTARIO: {linea}")
                         estado = 3
+                        break
                 if estado == 2:
                     if linea[-2:] == "*/":
-                        print(f"COMENTARIO: {linea}")
-                        break
+                        if aux == 1:
+                            estado = 5
+                            flag = True
+                            break
+                        else:
+                            estado = 4
+                            break
                     else:
-                        print(f"NO COMENTARIO: {linea}")
-                        estado = 3
+                        if i + 1 == len(lineas):
+                            estado = 3
+                            break
+                        else:
+                            estado = 5
+                            break
+
+
+            if estado == 3:
+                if multilinea:
+                    multilinea.append(lineas[i])
+                    print("NO COMMENTARIO: ")
+                    for line in multilinea:
+                        print(line)
+                    break
+                else:
+                    print(f"NO COMENTARIO: {lineas[i]}")
+                    i += 1
+            if estado == 4:
+                print(f"COMENTARIO: {lineas[i]}")
+                i += 1
+                estado = 1
+            if estado == 5:
+                multilinea.append(lineas[i])
+                i += 1
+                if flag:
+                    print("COMENTARIO MULTILINEA:")
+                    for line in multilinea:
+                        print(line)
+                    multilinea = []
+                    estado = 1
             
                 
 
