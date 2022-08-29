@@ -5,6 +5,7 @@ def main():
     automata = cAutomata("texto.txt")
     #automata.reconoceNV()
     #automata.comment()
-    automata.reconoceComent()
+    #automata.reconoceComent()
+    automata.automata()
 
 main()
