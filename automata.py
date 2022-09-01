@@ -13,6 +13,8 @@ class cAutomata:
     hyphen = 95
     #ESPACIO
     blankspace = 32
+    #PALABRAS RESERVADAS
+    RESERVADAS = ["if", "else", "for", "while"]
 
     def __init__(self, path):
         self.path = path
@@ -131,6 +133,9 @@ class cAutomata:
                 if estado == 1:
                     if linea.startswith("/*"):
                         estado = 2
+                    elif linea.startswith("//"):
+                        estado = 4
+                        break
                     else:
                         estado = 3
                         break
@@ -182,46 +187,58 @@ class cAutomata:
 
 
 
-    def validaLinea(self, lineas):
-        for linea in lineas: 
-            estado = 1
-            cadena = list(linea)
-            i = 0
+    def validaLineas(self, lineas):
+        for linea in lineas:
+            invalid_line = False
+            for palabra in linea.split():
+                if palabra in self.RESERVADAS:
+                    print(f"PALABRA RESERVADA: {palabra}")
+                    continue
+                estado = 1
+                cadena = list(palabra)
+                i = 0
+                while i < len(cadena):
+                    codigoA = ord(cadena[i])
+                    if estado == 1:
+                        if codigoA in range(self.A, self.Z) or codigoA in range(self.a, self.z):
+                            estado = 2
+                            i += 1
+                        else:
+                            estado = 3
+                    if estado == 2:
+                        if codigoA in range(self.A, self.Z) or codigoA in range(self.a, self.z) or codigoA in range(self.zero, self.nine) or codigoA == self.hyphen or codigoA == self.blankspace:
+                            estado = 2
+                            i += 1
+                        else:
+                            estado = 3
 
-            while i < len(cadena):
-                codigoA = ord(cadena[i])
-                if estado == 1:
-                    if codigoA in range(self.A, self.Z) or codigoA in range(self.a, self.z):
-                        estado = 2
-                        i += 1
-                    else:
-                        estado = 3
-                if estado == 2:
-                    if codigoA in range(self.A, self.Z) or codigoA in range(self.a, self.z) or codigoA in range(self.zero, self.nine) or codigoA == self.hyphen or codigoA == self.blankspace:
-                        estado = 2
-                        i += 1
-                    else:
-                        estado = 3
-
-                if estado == 3: 
-                    print(f"LINEA NO VALIDA: {linea}")
-                    del lineas[0]
-                    return lineas
-                    
-
-            if estado == 2:
+                    if estado == 3: 
+                        #print(f"PALABRA NO VALIDA: {palabra}")
+                        invalid_line = True
+                        break
+                            
+                    if estado == 2:
+                        #print(f"PALABRA VALIDA: {palabra}")
+                        pass
+            
+            if invalid_line:
+                print(f"LINEA NO VALIDA: {linea}")
+                del lineas[0]
+                return lineas
+            else:
                 print(f"LINEA VALIDA: {linea}")
                 del lineas[0]
                 return lineas
 
 
+
     def automata(self):
         lineas = self.show()
         while lineas:
-            if lineas[0].startswith("/*"):
+            if lineas[0].startswith("/*") or lineas[0].startswith("//"):
                 lineas = self.commentLine(lineas)
             else:
-                lineas = self.validaLinea(lineas)
+                lineas = self.validaLineas(lineas)
             
     
 
