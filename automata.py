@@ -4,17 +4,17 @@ class cAutomata:
 
     #VALORES PARA INTERVALOS Y EQUIVALENTES CODIGO ASCCI
     #INTERVALO A-Z
-    (A, Z) = (65, 90)
+    (A, Z) = (65, 91)
     #INTERVALO a-z
-    (a, z) = (97, 122)
+    (a, z) = (97, 123)
     #INTERVALO 0-9
-    (zero, nine) = (48, 57)
+    (zero, nine) = (48, 58)
     #GUION BAJO
     hyphen = 95
     #ESPACIO
     blankspace = 32
     #PALABRAS RESERVADAS
-    RESERVADAS = ["if", "else", "for", "while"]
+    RESERVADAS = ["if", "else", "for", "while", "string", "int", "as", "double", "main", "False", "True"]
 
     def __init__(self, path):
         self.path = path
@@ -194,6 +194,12 @@ class cAutomata:
                 if palabra in self.RESERVADAS:
                     print(f"PALABRA RESERVADA: {palabra}")
                     continue
+                
+                is_number = self.is_number(palabra)
+                if is_number:
+                    print(f"NUMERO: {palabra}")
+                    continue
+
                 estado = 1
                 cadena = list(palabra)
                 i = 0
@@ -213,7 +219,7 @@ class cAutomata:
                             estado = 3
 
                     if estado == 3: 
-                        #print(f"PALABRA NO VALIDA: {palabra}")
+                        print(f"PALABRA NO VALIDA: {palabra}")
                         invalid_line = True
                         break
                             
@@ -230,6 +236,13 @@ class cAutomata:
                 del lineas[0]
                 return lineas
 
+
+    def is_number(self, string):
+        try: 
+            int(string)
+            return True
+        except ValueError:
+            return False
 
 
     def automata(self):

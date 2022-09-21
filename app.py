@@ -2,9 +2,7 @@
 from automata import cAutomata
 
 def main():
-    automata = cAutomata("texto.txt")
-    #automata.reconoceNV()
-    #automata.reconoceComent()
+    automata = cAutomata("textolineas.txt")
     automata.automata()
 
 main()
