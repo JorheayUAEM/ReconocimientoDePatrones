@@ -186,7 +186,6 @@ class cAutomata:
                     return lineas
 
 
-
     def validaLineas(self, lineas):
         for linea in lineas:
             invalid_line = False
@@ -224,9 +223,11 @@ class cAutomata:
                         break
                             
                     if estado == 2:
-                        #print(f"PALABRA VALIDA: {palabra}")
                         pass
-            
+                
+                if estado == 2:
+                    print(f"PALABRA VALIDA: {palabra}")
+
             if invalid_line:
                 print(f"LINEA NO VALIDA: {linea}")
                 del lineas[0]
@@ -239,6 +240,12 @@ class cAutomata:
 
     def is_number(self, string):
         try: 
+            if "e" in string:
+                numero, exponente = string.split("e")
+                int(numero)
+                int(exponente)
+                print(f"NUMERO: {numero}, EXPONENTE: {exponente}")
+                return True
             int(string)
             return True
         except ValueError:

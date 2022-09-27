@@ -2,7 +2,7 @@
 from automata import cAutomata
 
 def main():
-    automata = cAutomata("textolineas.txt")
+    automata = cAutomata("texto.txt")
     automata.automata()
 
 main()
